@@ -10,12 +10,8 @@ public class MeterHistory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @Column(name = "meter_id")
-    private int meterId;
-
-    @ManyToOne
-    @Column(name = "meter_name", nullable = false)
-    private String meterName;
+    @JoinColumn(name = "meter_id")
+    private Meter meter;
     @Column(name = "date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime date;
     @Column(name = "day_reading", nullable = false)
@@ -23,19 +19,21 @@ public class MeterHistory {
     @Column(name = "night_reading", nullable = false)
     private int nightReading;
 
+    @JoinColumn(name = "meter_name")
+    private String meterName;
+
     public MeterHistory() {
     }
 
     public MeterHistory(Meter meter) {
-        this.meterId = meter.getMeterId();
+        this.meterName = meter.getMeterName();
         this.dayReading = meter.getLastDayReading();
         this.nightReading = meter.getLastNightReading();
     }
 
-    public MeterHistory(Long id, int meterId, LocalDateTime date, int dayReading, int nightReading, String meterName) {
+    public MeterHistory(Long id, LocalDateTime date, int dayReading, int nightReading, Meter meter) {
+        this.meter = meter;
         this.id = id;
-        this.meterId = meterId;
-        this.meterName = meterName;
         this.date = date;
         this.dayReading = dayReading;
         this.nightReading = nightReading;
@@ -49,20 +47,12 @@ public class MeterHistory {
         this.id = id;
     }
 
-    public int getMeterId() {
-        return meterId;
+    public Meter getMeter() {
+        return meter;
     }
 
-    public void setMeterId(int meterId) {
-        this.meterId = meterId;
-    }
-
-    public String getMeterName() {
-        return meterName;
-    }
-
-    public void setMeterName(String meterId) {
-        this.meterName = meterName;
+    public void setMeter(Meter meter) {
+        this.meter = meter;
     }
 
     public LocalDateTime getDate() {
@@ -87,5 +77,13 @@ public class MeterHistory {
 
     public void setNightReading(int nightReading) {
         this.nightReading = nightReading;
+    }
+
+    public String getMeterName() {
+        return meterName;
+    }
+
+    public void setMeterName(String meterName) {
+        this.meterName = meterName;
     }
 }
