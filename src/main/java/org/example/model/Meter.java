@@ -1,6 +1,7 @@
 package org.example.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "meters")
@@ -8,13 +9,16 @@ public class Meter {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "meter_id")
-    private int meterId;
+    private Long meterId;
     @Column(name = "meter_name", nullable = false)
     private String meterName;
+
+    @Column(name = "date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime date;
     @Column(name = "last_day_reading", nullable = false)
-    private int lastDayReading;
+    private float lastDayReading;
     @Column(name = "last_night_reading", nullable = false)
-    private int lastNightReading;
+    private float lastNightReading;
     public Meter() {
     }
 
@@ -24,11 +28,11 @@ public class Meter {
         this.lastNightReading = lastNightReading;
     }
 
-    public int getMeterId() {
+    public Long getMeterId() {
         return meterId;
     }
 
-    public void setMeterId(int meterId) {
+    public void setMeterId(Long meterId) {
         this.meterId = meterId;
     }
 
@@ -41,28 +45,38 @@ public class Meter {
     }
 
 
-    public int getLastDayReading() {
+    public float getLastDayReading() {
         return lastDayReading;
     }
 
-    public void setLastDayReading(int lastDayReading) {
+    public void setLastDayReading(float lastDayReading) {
         this.lastDayReading = lastDayReading;
     }
 
-    public int getLastNightReading() {
+    public float getLastNightReading() {
         return lastNightReading;
     }
 
-    public void setLastNightReading(int lastNightReading) {
+    public void setLastNightReading(float lastNightReading) {
         this.lastNightReading = lastNightReading;
+    }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     @Override
     public String toString() {
-        return "Meter{" +
-                "meterId='" + meterId + '\'' +
-                ", lastDayReading=" + lastDayReading +
-                ", lastNightReading=" + lastNightReading +
-                '}';
+        return "Meter{"
+                + "meterId=" + meterId
+                + ", meterName='" + meterName + '\''
+                + ", date=" + date
+                + ", lastDayReading=" + lastDayReading
+                + ", lastNightReading=" + lastNightReading
+                + '}';
     }
 }

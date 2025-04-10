@@ -6,6 +6,7 @@ import org.example.model.Meter;
 import org.example.service.MeterService;
 import org.hibernate.SessionFactory;
 import org.example.util.HibernateUtil;
+import java.util.List;
 
 public class MeterServiceImpl implements MeterService {
     private static final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
@@ -18,6 +19,25 @@ public class MeterServiceImpl implements MeterService {
     @Override
     public Meter get(Long id) {
         return meterDao.get(id);
+    }
+
+    @Override
+    public Meter getLastMeter() {
+        return meterDao.getLastMeter();
+    }
+    @Override
+    public List<String> getAllNames() {
+        return meterDao.getAllNames();
+    }
+
+    @Override
+    public Meter ShowLastResultsByName(String name) {
+        return meterDao.ShowLastResultsByName(name);
+    }
+
+    @Override
+    public List<Meter> getAllByName(String name) {
+        return meterDao.getAllByName(name);
     }
 
     @Override
