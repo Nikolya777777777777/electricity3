@@ -10,14 +10,9 @@ public class Meter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "meter_id")
     private Long meterId;
-    @Column(name = "meter_name", nullable = false)
     private String meterName;
-
-    @Column(name = "date", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime date;
-    @Column(name = "last_day_reading", nullable = false)
     private float lastDayReading;
-    @Column(name = "last_night_reading", nullable = false)
     private float lastNightReading;
     public Meter() {
     }

@@ -7,6 +7,7 @@ import org.example.service.MeterService;
 import org.hibernate.SessionFactory;
 import org.example.util.HibernateUtil;
 import java.util.List;
+import java.util.Optional;
 
 public class MeterServiceImpl implements MeterService {
     private static final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
@@ -18,12 +19,14 @@ public class MeterServiceImpl implements MeterService {
 
     @Override
     public Meter get(Long id) {
-        return meterDao.get(id);
+        return meterDao.get(id)
+                .orElseThrow(() -> new RuntimeException("Can not get meter by id: " + id));
     }
 
     @Override
     public Meter getLastMeter() {
-        return meterDao.getLastMeter();
+        return meterDao.getLastMeter()
+                .orElseThrow(() -> new RuntimeException("Can not get last meter"));
     }
     @Override
     public List<String> getAllNames() {
@@ -32,7 +35,8 @@ public class MeterServiceImpl implements MeterService {
 
     @Override
     public Meter ShowLastResultsByName(String name) {
-        return meterDao.ShowLastResultsByName(name);
+        return meterDao.ShowLastResultsByName(name)
+                .orElseThrow(() -> new RuntimeException("Can not show meter results"));
     }
 
     @Override

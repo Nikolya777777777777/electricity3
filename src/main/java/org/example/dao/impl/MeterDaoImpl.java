@@ -5,8 +5,8 @@ import org.example.model.Meter;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
-
 import java.util.List;
+import java.util.Optional;
 
 
 public class MeterDaoImpl extends AbstractDao implements MeterDao {
@@ -42,9 +42,9 @@ public class MeterDaoImpl extends AbstractDao implements MeterDao {
     }
 
     @Override
-    public Meter get(Long id) {
+    public Optional<Meter> get(Long id) {
         try (Session session = factory.openSession()) {
-            return session.get(Meter.class, id);
+            return Optional.ofNullable(session.get(Meter.class, id));
         } catch (RuntimeException e) {
             throw new RuntimeException("Can not get Meter with id: " + id);
         }
@@ -53,7 +53,7 @@ public class MeterDaoImpl extends AbstractDao implements MeterDao {
     @Override
     public List<Meter> getAllByName(String name) {
         try (Session session = factory.openSession()) {
-            return session.createQuery("from Meter m where m.name = :name", Meter.class)
+            return session.createQuery("from Meter m where m.meterName = :name", Meter.class)
                     .setParameter("name", name).list();
         } catch (RuntimeException e) {
             throw new RuntimeException("Can not get all Meter history");
@@ -61,14 +61,16 @@ public class MeterDaoImpl extends AbstractDao implements MeterDao {
     }
 
     @Override
-    public Meter getLastMeter() {
-        return lastMeter;
+    public Optional<Meter> getLastMeter() {
+        return Optional.ofNullable(lastMeter);
     }
 
     @Override
     public void remove(Meter entity) {
         Transaction transaction = null;
-        try (Session session = factory.openSession()) {
+        Session session = null;
+        try {
+            session = factory.openSession();
             transaction = session.beginTransaction();
             session.remove(entity);
             transaction.commit();
@@ -77,25 +79,31 @@ public class MeterDaoImpl extends AbstractDao implements MeterDao {
                 transaction.rollback();
             }
             throw new RuntimeException("Can not remove Meter: " + entity);
+        } finally {
+            if (session != null) {
+                session.close();
+            }
         }
     }
 
     @Override
     public List<String> getAllNames() {
         try (Session session = factory.openSession()) {
-            return session.createQuery("SELECT DISTINCT m.meterName FROM Meter m", String.class).list();
+            return session
+                    .createQuery("SELECT DISTINCT m.meterName FROM Meter m", String.class)
+                    .getResultList();
         } catch (RuntimeException e) {
             throw new RuntimeException("Can not get all meters names history");
         }
     }
 
     @Override
-    public Meter ShowLastResultsByName(String name) {
+    public Optional<Meter> ShowLastResultsByName(String name) {
         try (Session session = factory.openSession()) {
-            return session.createQuery("FROM Meter m WHERE m.meterName = :name ORDER BY m.date DESC", Meter.class)
+            return Optional.ofNullable(session.createQuery("FROM Meter m WHERE m.meterName = :name ORDER BY m.date DESC", Meter.class)
                     .setParameter("name", name)
                     .setMaxResults(1)
-                    .uniqueResult();
+                    .uniqueResult());
         } catch (RuntimeException e) {
             throw new RuntimeException("Can not get last meter's result");
         }

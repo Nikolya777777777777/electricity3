@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.dao.exception.DataProcessingException;
+import org.example.exception.DataProcessingException;
 import org.example.model.Meter;
 import org.example.service.MeterService;
 import org.example.service.impl.MeterServiceImpl;
@@ -62,9 +62,9 @@ public class MeterApp {
             tarifNaDzien = scanner.nextFloat();
             System.out.println("Новий тариф на ніч: ");
             tarifNaNoch = scanner.nextFloat();
-        } catch (RuntimeException e) {
-            System.out.println("Ви ввели некоректне значення, спробуйте знову");
+        } catch (Exception e) {
             choice = 1;
+            throw new DataProcessingException("Ви ввели некоректне значення, спробуйте знову");
         }
     }
     private static void showLatestMeterReading() {
@@ -107,9 +107,9 @@ public class MeterApp {
             } else {
                 System.out.println("Спочатку створіть лічильник для оновлення даних у ньому.");
             }
-        } catch (RuntimeException e) {
-            System.out.println("Ви ввели некоректне значення, спробуйте знову.");
+        } catch (Exception e) {
             choice = 4;
+            throw new DataProcessingException("Ви ввели некоректне значення, спробуйте знову.");
         }
     }
     private static void defaultMeter() {
@@ -157,10 +157,9 @@ public class MeterApp {
             meter.setLastDayReading(dayKw);
             meter.setLastNightReading(nightKw);
             meterService.create(meter);
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             choice = 6;
             throw new RuntimeException("Ви ввели некоректне значення, спробуйте знову");
         }
-
     }
 }
